@@ -70,10 +70,17 @@ for bug in itemlist :
         url = r.json()['comments_url']
         for c in comments:
             cbody = "On %s, '%s (%s) wrote:\n%s" % (c['when'], c['who'], c['mail'], c['text'])
-            r = requests.post(url, data=json.dumps({"body": cbody}), auth=(user, pwd))
-            if not r.ok:
-                print "Error:", r.json()
+            rc = requests.post(url, data=json.dumps({"body": cbody}), auth=(user, pwd))
+            if not rc.ok:
+                print "Error:", rc.json()
                 print "URL:", url
                 print "Parameters:", params
+
+        if bug_status == "RESOLVED":
+            url = r.json()['url']
+            rs = requests.patch(url, data=json.dumps({"state": "closed"}), auth=(user, pwd))
+            if not rs.ok:
+                print "Error:", rs.json()
+                print "URL:", url
 
 
